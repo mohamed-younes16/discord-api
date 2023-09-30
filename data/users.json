@@ -1,0 +1,32 @@
+[
+   {
+      "username": "younesff",
+      "pass": "$2b$12$b683tsvNDFgHiMm5Vk/ErOP568uY3mueKCuKGO3osvKB7VBJV5D0u",
+      "id": 3,
+      "roles": {
+         "admin": 999,
+         "editor": 777
+      },
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InlvdW5lc2ZmIiwiaWF0IjoxNjk2MDQ3OTM3LCJleHAiOjE2OTYxMzQzMzd9.5XwHAALyCwm26vyVfUKAQq6_EQXZqrFGnAVladkSs1k"
+   },
+   {
+      "username": "younes",
+      "pass": "$2b$12$5qATCN5fHZfBaFdQ/Ngg/ek5qpWUX3YnUiqCvrsVWkMCW8Pxbkqqm",
+      "id": 1,
+      "roles": {
+         "admin": 999,
+         "editor": 777,
+         "user": 555
+      },
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InlvdW5lcyIsImlhdCI6MTY5NjA1MTMwMCwiZXhwIjoxNjk2MTM3NzAwfQ.5utX7Iselk-KD4OK33OIP7Fa6xWJ5tW9KiDPZeb8d6w"
+   },
+   {
+      "username": "younesdz",
+      "pass": "$2b$12$hSDvOtyczQAhLmEE0yLli.cj7iuqkHOsOx7diWc1kTn4YT9ewTEpe",
+      "id": 2,
+      "roles": {
+         "user": 555
+      },
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InlvdW5lc2R6IiwiaWF0IjoxNjk2MDUxNDMwLCJleHAiOjE2OTYxMzc4MzB9.k-yT-N1z1Q6UxQd5VzMUna1pXXRIXFCeFack_3zD52M"
+   }
+]
