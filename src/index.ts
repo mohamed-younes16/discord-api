@@ -47,7 +47,7 @@ server.all("*", (req: Request, res: Response) => {
     res.type("txt").send("404 Not Found");
   }
 });
-createuser()
+
 mongoose.connection.once("open", () => {
 
   server.listen(Port, () => console.log(`listening on port ${Port}`));
