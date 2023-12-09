@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Employee {
+  id        String   @id @unique @default(uuid())
+  name      String   @unique
+  createdAt DateTime
+}
+
+model User {
+  id        String   @id @unique @default(uuid())
+  name      String
+  username  String
+  imageUrl  String
+  bio       String
+  onboarded Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  active    Boolean
+  friends   User[]   @relation("friends") 
+  friendsof User[]   @relation("friends") 
+  memberOf  member[] @relation("server_Member")
+  email     String   @unique
+
+  @@index([id])
+}
+
+model server {
+  updatedAt      DateTime @updatedAt
+  id             String   @id @unique @default(uuid())
+  name           String
+  imageUrl       String
+  createdAt      DateTime @default(now())
+  active         Boolean
+  members        member[] @relation("server_Member")
+  invitationLink String   @unique @default(uuid())
+}
+
+model member {
+  id       String   @id @unique @default(uuid())
+  member   User     @relation("server_Member", fields: [memberId], references: [id])
+  memberId String
+  server   server   @relation("server_Member", fields: [serverId], references: [id])
+  serverId String
+  userType UserType
+}
+
+enum UserType {
+  ADMIN
+  MODERATOR
+  MEMBER
+}

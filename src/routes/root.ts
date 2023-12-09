@@ -1,3 +1,5 @@
+import { Request, Response } from "express"
+
 const router = require("express").Router()
 const path  = require("path")
  
@@ -9,7 +11,7 @@ const path  = require("path")
 
 
 
-router.get('^/$|/index(.html)?', (req, res)=>{  
+router.get('^/$|/index(.html)?', (req:Request, res:Response)=>{  
 
     res.sendFile(path.join(__dirname ,"..", "views",`index.html`))
 
@@ -17,13 +19,13 @@ router.get('^/$|/index(.html)?', (req, res)=>{
 })   
 
 
-router.get('/new-index', (req, res)=>{
+router.get('/new-index', (req:Request, res:Response)=>{
 
     res.sendFile(path.join(__dirname ,"..", "views", `new-page.html`))
  
 }) 
 
-router.get('/old', (req, res)=>{
+router.get('/old', (req:Request, res:Response)=>{
     res.redirect("/new-index",301)
 
 }) 

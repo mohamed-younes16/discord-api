@@ -1,0 +1,121 @@
+import mongoose, { Document, Model } from "mongoose";
+import { v4 } from "uuid";
+import { UserDocument } from "./UsersModel";
+
+export interface Member {
+    member: UserDocument;
+    userType: "admin" | "member" | "editor";
+}
+
+export interface Chat {
+    creator: mongoose.Types.ObjectId;
+    content: {
+        text: string;
+       
+        file?: {
+            url:string;
+            fileType:"image"|"pdf";
+        }
+    };
+    createdAt: Date;
+    likes: number;
+}
+
+export interface ServerDocument extends Document {
+    name: string;
+    imageUrl: string;
+    invitationLink: string;
+    members: Member[];
+    channels:{  
+        name:String;
+        type:"text"|"video"|"audio" ;
+        chat:Chat[];
+        creator: mongoose.Types.ObjectId;
+        createdAt: Date;
+        _id: mongoose.Types.ObjectId;
+    }[];
+    createdAt: Date;
+    _id: mongoose.Types.ObjectId;
+}
+
+const servermodel = new mongoose.Schema<ServerDocument>({
+    name: {
+        type: String,
+        required: true,
+        unique:true,
+    },
+    imageUrl: {
+        type: String,
+        required: true,
+    },
+    members: [
+        {
+            member: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Users",
+               
+            },
+            userType: {
+                type: String,
+                enum: ["admin", "member", "editor"],
+                default: "member",
+            },
+        },
+    ],
+
+    channels : [{
+        name: {
+            type:String,
+           
+        },
+        creator :
+        {type: mongoose.Schema.Types.ObjectId,
+            ref: "Users", 
+        },
+            type :{
+                type: String,
+                enum: ["audio", "text", "video"],
+                default: "text",
+            },
+        chat: [
+        {
+            creator: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Users",
+            },
+            content: {
+                text:  String,
+               
+                file: {
+                    url:String,
+                    fileType : {type:String,enum :["image","pdf"]}
+                },
+            },
+            createdAt: {
+                type: Date,
+                default: new Date(),
+            },
+            likes: Number,
+        }],
+        createdAt: {
+            type: Date,
+            default: new Date(),
+        }
+
+}
+],
+    
+    createdAt: {
+        type: Date,
+        default: new Date(),
+    },
+    invitationLink :{
+        type:String,
+        default:v4(),
+        unique:true
+    }
+});
+
+const Servers: Model<ServerDocument> = mongoose.models?.Servers || mongoose.model<ServerDocument>("Servers", servermodel);
+
+export default Servers;

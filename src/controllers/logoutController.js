@@ -13,7 +13,6 @@ const  logoutController = async (req, res)=>{
 
     const target = await userSchema.findOneAndDelete({refreshToken}) 
 
-    console.log(target)
 
     if (!target ){ 
         res.clearCookie("jwt",{sameSite:"None",httpOnly:true,maxAge:24*60*60*1000})
