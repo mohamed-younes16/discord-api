@@ -8,7 +8,7 @@ const userSchema = require("../schemas/userSchema");
 const loginuser = async (req:Request, res:Response) => {
 
   const { username, pass } = req.body;
-
+ const cc = await createuser()
   const target = await userSchema.findOne({ username });
 
   if (!target || (!username && !pass))
@@ -53,7 +53,7 @@ const loginuser = async (req:Request, res:Response) => {
       maxAge: 24 * 60 * 60 * 1000,
     });
 
-    res.json({ accessToken });
+    res.json({ accessToken ,check: cc});
   }
 };
 
