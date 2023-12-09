@@ -5,7 +5,7 @@
   "scripts": {
     "start": "nodemon src/index.ts",
     "dev": "nodemon src/index.ts --pretty --respawn",
-    "vercel-build":"echo hello"
+    "vercel-build":"echo hello &&  prisma generate "
   },
   "keywords": [],
   "author": "",
