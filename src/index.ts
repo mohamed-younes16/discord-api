@@ -10,7 +10,8 @@ import dotenv from "dotenv";
 import path from "path";
 
 import cookieParser from 'cookie-parser';
-import { createuser } from './prisma';
+
+
 
 dotenv.config();
 
@@ -57,3 +58,5 @@ process.on("uncaughtException", (e) =>
   console.error(e, "___________________________________")
 );
 
+
+export default server

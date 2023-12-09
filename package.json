@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node src/index.ts",
-    "dev": "nodemon src/index.ts --pretty --respawn"
+    "start": "nodemon src/index.ts",
+    "dev": "nodemon src/index.ts --pretty --respawn",
+    "vercel-build":"echo hello"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +22,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.5.3",
     "ts-node-dev": "^2.0.0",
+    "tsc": "^2.0.4",
     "uuid": "^9.0.1",
     "zod": "^3.22.4"
   },
