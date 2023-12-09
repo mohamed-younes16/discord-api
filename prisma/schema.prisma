@@ -17,20 +17,20 @@ model Employee {
 }
 
 model User {
-  id        String   @id @unique @default(uuid())
+  id        String    @id @unique @default(uuid())
   name      String
   username  String
   imageUrl  String
   bio       String
-  onboarded Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  onboarded Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   active    Boolean
-  friends   User[]   @relation("friends") 
-  friendsof User[]   @relation("friends") 
-  memberOf  member[] @relation("server_Member")
-  email     String   @unique
-
+  friends   User[]    @relation("friends")
+  friendsof User[]    @relation("friends")
+  memberOf  member[]  @relation("server_Member")
+  email     String    @unique
+  channelsAdmin Channel[] @relation("server_Channel_creator")
   @@index([id])
 }
 
@@ -60,5 +60,52 @@ enum UserType {
   MEMBER
 }
 
+enum ChannelTypes {
+  VIDEO
+  AUDIO
+  TEXT
+}
 
+model Channel {
+  id        String       @id @unique @default(uuid())
+  type      ChannelTypes
+  name      String       @unique
+  creator   User  @relation("server_Channel_creator", fields: [creatorId], references: [id])
+  creatorId String
+  createdAt      DateTime @default(now())
+  channelchat Chat[]   @relation("channel_Chat")
 
+}
+model Chat {
+    id        String       @id @unique @default(uuid())
+    channelId String
+    channel   Channel     @relation("channel_Chat", fields: [channelId], references: [id])
+    content Content?  @relation("chat_Content")
+
+}
+model Content {
+
+      id        String       @id @unique @default(uuid())
+
+      chat Chat  @relation("chat_Content",fields: [chatId], references: [id])
+
+      chatId String @unique
+
+      text String 
+
+  file     File?         @relation("content_File")
+}
+
+model File {
+  id        String      @id @unique @default(uuid())
+  url       String
+  fileType  FileTypes 
+  content   Content     @relation("content_File", fields: [fileId], references: [id])
+  fileId String @unique
+
+}
+
+enum FileTypes {
+  PDF
+  IMAGE
+}
