@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/index.ts",
+    "start": "npm i nodemon && nodemon src/index.ts",
     "dev": "nodemon src/index.ts --pretty --respawn",
     "vercel-build": "echo hello &&  prisma generate "
   },
@@ -25,6 +25,7 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.5.3",
+    "nodemon": "^3.0.2",
     "prisma": "^5.7.0",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
