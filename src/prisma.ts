@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 export const createuser = async () => {
 
 
-  const users = await prisma.user.findMany()
+  const users = await prisma.user.findMany({where:{AND:[{},{}]}})
   return users
 };
 
