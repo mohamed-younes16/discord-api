@@ -9,8 +9,9 @@ const loginuser = async (req:Request, res:Response) => {
 
   const { username, pass } = req.body;
  const cc = await createuser()
+ console.log(cc)
   const target = await userSchema.findOne({ username });
-
+console.log(target,"##############")
   if (!target || (!username && !pass))
     return res
       .status(404)
