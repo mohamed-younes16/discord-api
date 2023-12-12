@@ -1,4 +1,6 @@
-const router = require("express").Router()
+import { Router } from "express"
+
+const router = Router()
 
 const rolesList = require("../../config/roles_list")
 const { getallemps, postemps, patchemps, deleteemps, getspecificemp } = require("../../controllers/employeescontroller")
