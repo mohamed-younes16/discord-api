@@ -1,5 +1,0 @@
-2023-16-26  02:16:50 => GET  =>  31f8b6ca-81aa-4ae9-b123-349fd62fa203 ====>  http://localhost:3500 
-2023-17-26  02:17:05 => GET  =>  8e9eace9-c026-457e-b17c-1efcf3990df4 ====>  http://localhost:3500 
-2023-17-26  02:17:06 => GET  =>  22041613-7692-4f68-9e7b-9dd513bd6fef ====>  http://localhost:3500 
-2023-18-26  02:18:17 => GET  =>  33617926-d105-4052-b3b6-9d96dd19b1e6 ====>  https://www.youtube.com 
-2023-25-26  02:25:43 => GET  =>  f26ab04c-e02a-47a9-aa4d-7837bd04d85a ====>  https://www.youtube.com 

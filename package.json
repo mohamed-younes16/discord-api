@@ -5,7 +5,8 @@
   "scripts": {
     "start": "npx prisma generate && nodemon src/index.ts",
     "dev": "nodemon src/index.ts --pretty --respawn",
-    "vercel-build": "echo hello &&  prisma generate "
+    "vercel-build": "echo hello &&  prisma generate ",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",

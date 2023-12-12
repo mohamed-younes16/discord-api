@@ -2,7 +2,7 @@
 const employeeSchema = require("../schemas/employeeShema")
 
 import { ErrorRequestHandler, Request, Response } from "express";
-import { Document } from "mongoose";
+
 
 const getallemps = async (req: Request, res: Response): Promise<void> => {
 
