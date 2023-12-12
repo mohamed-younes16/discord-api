@@ -10,12 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Employee {
-  id        String   @id @unique @default(uuid())
-  name      String   @unique
-  createdAt DateTime
-}
-
 model User {
   id        String    @id @unique @default(uuid())
   name      String
@@ -41,24 +35,24 @@ model server {
   name           String
   imageUrl       String
   createdAt      DateTime @default(now())
-  active         Boolean
   members        member[] @relation("server_Member")
   invitationLink String   @unique @default(uuid())
+  channels Channel[] @relation("server_Channel_creator")
 }
 
 model member {
   id       String   @id @unique @default(uuid())
   member   User     @relation("server_Member", fields: [memberId], references: [id])
-  memberId String
+  memberId String @unique
   server   server   @relation("server_Member", fields: [serverId], references: [id])
   serverId String
   userType UserType
 }
 
 enum UserType {
-  ADMIN
-  MODERATOR
-  MEMBER
+  admin
+  moderator
+  member
 }
 
 enum ChannelTypes {
@@ -68,6 +62,8 @@ enum ChannelTypes {
 }
 
 model Channel {
+  serversBelong server @relation("server_Channel_creator",fields: [serversBelongId],references: [id])
+  serversBelongId String
   id        String       @id @unique @default(uuid())
   type      ChannelTypes
   name      String       @unique

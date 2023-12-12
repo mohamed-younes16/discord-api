@@ -1,11 +1,9 @@
 import { credentials } from './middleware/credentials';
 
-import { connectToDB } from './config/dbconfig';
 import express from "express";
 import { Request, Response } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-import mongoose from "mongoose";
 import dotenv from "dotenv";
 import path from "path";
 
@@ -19,7 +17,7 @@ const Port = process.env.PORT || 5000;
 const allowedHeaders = require("./config/corsOptions");
 const server = express();
 
-connectToDB();
+
 
 server.use(cookieParser());
 server.use(credentials);
@@ -30,12 +28,13 @@ server.use(bodyParser.json());
 
 // routes _____________________________________________
 server.use("/", require("./routes/root"));
-server.use("/subdir", require("./routes/subdir"));
+// server.use("/subdir", require("./routes/subdir"));
 server.use("/register", require("./routes/register"));
 server.use("/login", require("./routes/login"));
-server.use("/refresh", require("./routes/refresh"));
-server.use("/logout", require("./routes/logout"));
-server.use("/emp", require("./routes/api/employees"));
+// server.use("/refresh", require("./routes/refresh"));
+// server.use("/logout", require("./routes/logout"));
+// server.use("/emp", require("./routes/api/employees"));
+server.use("/servers", require("./routes/servers"));
 // // __________________________________________________________
 
 server.all("*", (req: Request, res: Response) => {
@@ -49,10 +48,7 @@ server.all("*", (req: Request, res: Response) => {
   }
 });
 
-mongoose.connection.once("open", () => {
-
-  server.listen(Port, () => console.log(`listening on port ${Port}`));
-});
+server.listen(Port, () => console.log(`listening on port ${Port}`));
 
 process.on("uncaughtException", (e) =>
   console.error(e, "___________________________________")

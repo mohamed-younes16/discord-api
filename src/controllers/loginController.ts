@@ -1,9 +1,5 @@
 import { Request, Response } from "express";
-import { createuser, getUser } from "./../prisma";
-const bcrypt = require("bcrypt");
-
-const jwt = require("jsonwebtoken");
-const userSchema = require("../schemas/userSchema");
+import {  getUser } from "./../prisma";
 
 const loginuser = async (req: Request, res: Response) => {
   const { data } = req.body;
