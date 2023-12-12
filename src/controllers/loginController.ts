@@ -1,60 +1,58 @@
-import { Request, Response } from 'express';
-import { createuser } from './../prisma';
+import { Request, Response } from "express";
+import { createuser, getUser } from "./../prisma";
 const bcrypt = require("bcrypt");
 
 const jwt = require("jsonwebtoken");
 const userSchema = require("../schemas/userSchema");
 
-const loginuser = async (req:Request, res:Response) => {
+const loginuser = async (req: Request, res: Response) => {
+  const { data } = req.body;
+  console.log(data)
 
-  const { username, pass } = req.body;
- const cc = await createuser()
- console.log(cc)
-  const target = await userSchema.findOne({ username });
-console.log(target,"##############")
-  if (!target || (!username && !pass))
+  if (!data) {
     return res
       .status(404)
       .json({ message: "user not found or no valid data passed " });
+  }
 
-  const rightpass = await bcrypt.compare(pass, target.pass);
+  // if (!rightpass) return res.status(401).json({ message: "wrong password" });
+  if (data) {
+    // const roles = Object.values(target.roles);
 
-  if (!rightpass) return res.status(401).json({ message: "wrong password" });
-  if (rightpass) {
-    const roles = Object.values(target.roles);
+    // const accessToken = jwt.sign(
+    //   {
+    //     userinfo: {
+    //       username: target.username,
+    //       roles,
+    //     },
+    //   },
+    //   process.env.ACCESS_TOKEN_SECRET,
+    //   { expiresIn: "800s" }
+    // );
 
-    const accessToken = jwt.sign(
-      {
-        userinfo: {
-          username: target.username,
-          roles,
-        },
-      },
-      process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "800s" }
-    );
+    // const refreshToken = jwt.sign(
+    //   {
+    //     username: target.username,
+    //   },
+    //   process.env.REFRESH_TOKEN_SECRET,
+    //   { expiresIn: "1d" }
+    // );
 
-    const refreshToken = jwt.sign(
-      {
-        username: target.username,
-      },
-      process.env.REFRESH_TOKEN_SECRET,
-      { expiresIn: "1d" }
-    );
+    // const upres = await userSchema.findOneAndUpdate(
+    //   { username },
+    //   { refreshToken },
+    //   { new: true }
+    // );
 
-    const upres = await userSchema.findOneAndUpdate(
-      { username },
-      { refreshToken },
-      { new: true }
-    );
+    // res.cookie("jwt", refreshToken, {
+    //   httpOnly: true,
+    //   sameSite: "none",
+    //   maxAge: 24 * 60 * 60 * 1000,
+    // });
+    const createUser = await getUser(data.id)
 
-    res.cookie("jwt", refreshToken, {
-      httpOnly: true,
-      sameSite: "none",
-      maxAge: 24 * 60 * 60 * 1000,
-    });
+    res.json({ user: createUser });
 
-    res.json({ accessToken ,check: cc});
   }
 };
 

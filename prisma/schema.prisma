@@ -19,14 +19,15 @@ model Employee {
 model User {
   id        String    @id @unique @default(uuid())
   name      String
-  username  String
+  // idc String @unique
+  username  String @unique
   imageUrl  String
   bio       String
   onboarded Boolean   @default(false)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   active    Boolean
-  friends   User[]    @relation("friends")
+  freinds    User[]    @relation("friends")
   friendsof User[]    @relation("friends")
   memberOf  member[]  @relation("server_Member")
   email     String    @unique
