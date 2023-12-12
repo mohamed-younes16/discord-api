@@ -1,6 +1,8 @@
+import { Router } from "express"
+
 const loginuser = require("../controllers/loginController")
 
-const router = require("express").Router()
+const router = Router()
 
 
 router.post("/",loginuser)

@@ -1,3 +1,5 @@
+import { Request, Response } from "express"
+
 const jwt = require("jsonwebtoken")
 const userSchema = require("../schemas/userSchema")
 
@@ -6,7 +8,7 @@ const userSchema = require("../schemas/userSchema")
 
 
 
-const handleRefreshToken = async (req, res)=>{
+const handleRefreshToken = async (req:Request, res:Response)=>{
 
     const cookies = req.cookies
     if(!cookies?.jwt ) return res.status(401).json({"message": "you might be not logged-in to do this operation "})

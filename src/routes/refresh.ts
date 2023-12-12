@@ -1,6 +1,8 @@
+import { Router } from "express"
+
 const refreshController = require("../controllers/refreshController")
 
-const router = require("express").Router()
+const router = Router()
 
 
 router.get("/",refreshController)
