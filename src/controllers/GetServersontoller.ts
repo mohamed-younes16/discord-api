@@ -1,4 +1,4 @@
-import { PrismaClient, server } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 
 const GetServersontoller = async (req: Request, res: Response) => {
@@ -9,23 +9,22 @@ const GetServersontoller = async (req: Request, res: Response) => {
     serverId,
     chatLimit,
     operationType,
+    invitationLink
   }: {
     userId: string;
     chatLimit: number;
     serverId: string;
-    operationType: "findGeneral" | "findSpecific";
+    operationType: "findGeneral" | "findSpecific"|"findInvitation";
+    invitationLink:string
   } = req.body;
 
   if (!userId) {
     return res.status(401).json({ message: "Not Authorized " });
   }
-console.log(    userId,
-  serverId,
-  chatLimit,
-  operationType,)
+
   try {
     if (operationType === "findGeneral") {
-console.log("general")
+
       serversBelongsTo = await prisma.server.findMany({
         where: { members: { some: { memberId: userId } } },
         include: { members: true, channels: true },
@@ -55,16 +54,21 @@ console.log("general")
         },
       });
     }
+    else if (operationType === "findInvitation") {
+      serversBelongsTo = await prisma.server.findFirst({where:{ invitationLink, }},)
+      
+      };
+    
 
-console.log(serversBelongsTo)
+
     res
       .status(202)
-      .json({ message: `created successfully ☑️ `, serversBelongsTo });
+      .json({ message: `found server(s) successfully ☑️ `, serversBelongsTo });
   } catch (error) {
     console.log(error);
     res
       .status(409)
-      .json({ message: ` was not created because it already exists ❌ ` });
+      .json({ message: ` Error Happend when fetching servers ❌ ` });
   }
 };
 

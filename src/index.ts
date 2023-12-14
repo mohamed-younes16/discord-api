@@ -35,6 +35,7 @@ server.use("/login", require("./routes/login"));
 // server.use("/logout", require("./routes/logout"));
 // server.use("/emp", require("./routes/api/employees"));
 server.use("/servers", require("./routes/servers"));
+server.use("/state", require("./routes/state"));
 // // __________________________________________________________
 
 server.all("*", (req: Request, res: Response) => {

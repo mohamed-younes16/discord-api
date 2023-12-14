@@ -13,14 +13,7 @@ const {
 if (!userId) {
     return res.status(401).json({ message: "Not Authorized " });
 }
-console.log({
-    data: {
-    ...serverData,
-    members: {
-        create:{memberId:userId,userType:"admin"}
-    },
-    }
-})
+
 try {
 
     const serverinitialization = await prisma.server.create({

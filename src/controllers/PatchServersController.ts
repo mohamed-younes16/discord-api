@@ -1,24 +1,43 @@
+import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 
-
-
-const GetServersontoller = async (req: Request, res: Response) => {
-  const { userId } = req.body;
-
-  
-
+const PatchServersontoller = async (req: Request, res: Response) => {
+  const {
+    userId,
+    serverId,
+    operationType,
+    invitationLink,
+  }: {
+    userId: string;
+    serverId: string;
+    operationType: "addingMember" | "addingChat" | "editingServer";
+    invitationLink: string;
+  } = req.body;
+  const prisma = new PrismaClient();
+  let ServerUpdate :any
+console.log(req.body)
   if (!userId) {
-    return res
-      .status(404)
-      .json({ message: "No valid data passed " });
+    return res.status(401).json({ message: "Not Authorized" });
   }
 
-  if (userId) {
+  try {
+    if (operationType=="addingMember"){
+ServerUpdate = await prisma.server.update({where:{invitationLink},
+  data:{members:{create:{memberId:userId,userType:"member"}}}})
+    }
+
+    console.log(ServerUpdate)
+    res
+    .status(201)
+    .json({ message: ` User Added to Server ✅  ` });
 
 
-    res.json({  });
-
+  } catch (error) {
+    console.log(error);
+    res
+      .status(409)
+      .json({ message: ` Error Happend in the update operation ❌ ` });
   }
 };
 
-module.exports = GetServersontoller;
+module.exports = PatchServersontoller;
