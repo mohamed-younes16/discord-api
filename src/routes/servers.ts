@@ -7,7 +7,7 @@ const DeleteServersontoller = require("../controllers/DeleteServersController");
 
 const router = Router();
 
-router.get("/get", GetServersontoller);
+router.get("/access", GetServersontoller);
 router.post("/create", PostServersontoller);
 router.delete("/delete", DeleteServersontoller);
 router.patch("/update", PatchServersontoller);

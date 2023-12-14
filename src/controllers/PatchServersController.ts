@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 
 const GetServersontoller = async (req: Request, res: Response) => {
   const { userId } = req.body;
-  console.log(userId)
+
   
 
   if (!userId) {

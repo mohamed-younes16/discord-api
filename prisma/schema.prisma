@@ -11,39 +11,41 @@ datasource db {
 }
 
 model User {
-  id        String    @id @unique @default(uuid())
-  name      String
+  id            String    @id @unique @default(uuid())
+  name          String
   // idc String @unique
-  username  String @unique
-  imageUrl  String
-  bio       String
-  onboarded Boolean   @default(false)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  active    Boolean
-  freinds    User[]    @relation("friends")
-  friendsof User[]    @relation("friends")
-  memberOf  member[]  @relation("server_Member")
-  email     String    @unique
+  username      String    @unique
+  imageUrl      String
+  bio           String
+  onboarded     Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  active        Boolean
+  freinds       User[]    @relation("friends")
+  friendsof     User[]    @relation("friends")
+  memberOf      member[]  @relation("server_Member")
+  email         String    @unique
   channelsAdmin Channel[] @relation("server_Channel_creator")
+
   @@index([id])
 }
 
 model server {
-  updatedAt      DateTime @updatedAt
-  id             String   @id @unique @default(uuid())
-  name           String
+  updatedAt      DateTime  @updatedAt
+  id             String    @id @unique @default(uuid())
+  name           String    
   imageUrl       String
-  createdAt      DateTime @default(now())
-  members        member[] @relation("server_Member")
-  invitationLink String   @unique @default(uuid())
-  channels Channel[] @relation("server_Channel_creator")
+  createdAt      DateTime  @default(now())
+  members        member[]  @relation("server_Member")
+  invitationLink String    @unique @default(uuid())
+  channels       Channel[] @relation("server_Channel_creator")
+  @@index([id])
 }
 
 model member {
   id       String   @id @unique @default(uuid())
   member   User     @relation("server_Member", fields: [memberId], references: [id])
-  memberId String @unique
+  memberId String
   server   server   @relation("server_Member", fields: [serverId], references: [id])
   serverId String
   userType UserType
@@ -56,53 +58,53 @@ enum UserType {
 }
 
 enum ChannelTypes {
-  VIDEO
-  AUDIO
-  TEXT
+  video
+  audio
+  text
 }
 
 model Channel {
-  serversBelong server @relation("server_Channel_creator",fields: [serversBelongId],references: [id])
+  serversBelong   server       @relation("server_Channel_creator", fields: [serversBelongId], references: [id])
   serversBelongId String
-  id        String       @id @unique @default(uuid())
-  type      ChannelTypes
-  name      String       @unique
-  creator   User  @relation("server_Channel_creator", fields: [creatorId], references: [id])
-  creatorId String
-  createdAt      DateTime @default(now())
-  channelchat Chat[]   @relation("channel_Chat")
-
+  id              String       @id @unique @default(uuid())
+  type            ChannelTypes
+  name            String     
+  creator         User         @relation("server_Channel_creator", fields: [creatorId], references: [id])
+  creatorId       String
+  createdAt       DateTime     @default(now())
+  chat     Chat[]       @relation("channel_Chat")
+  @@unique([name,serversBelongId])
 }
+
 model Chat {
-    id        String       @id @unique @default(uuid())
-    channelId String
-    channel   Channel     @relation("channel_Chat", fields: [channelId], references: [id])
-    content Content?  @relation("chat_Content")
-
+  id        String   @id @unique @default(uuid())
+  channelId String
+  createdAt DateTime @default(now())
+  channel   Channel  @relation("channel_Chat", fields: [channelId], references: [id])
+  content   Content? @relation("chat_Content")
 }
+
 model Content {
+  id String @id @unique @default(uuid())
 
-      id        String       @id @unique @default(uuid())
+  chat Chat @relation("chat_Content", fields: [chatId], references: [id])
 
-      chat Chat  @relation("chat_Content",fields: [chatId], references: [id])
+  chatId String @unique
 
-      chatId String @unique
+  text String
 
-      text String 
-
-  file     File?         @relation("content_File")
+  file File? @relation("content_File")
 }
 
 model File {
-  id        String      @id @unique @default(uuid())
-  url       String
-  fileType  FileTypes 
-  content   Content     @relation("content_File", fields: [fileId], references: [id])
-  fileId String @unique
-
+  id       String    @id @unique @default(uuid())
+  url      String
+  fileType FileTypes
+  content  Content   @relation("content_File", fields: [fileId], references: [id])
+  fileId   String    @unique
 }
 
 enum FileTypes {
-  PDF
-  IMAGE
+  pdf
+  image
 }

@@ -3,7 +3,7 @@ import {  getUser } from "./../prisma";
 
 const loginuser = async (req: Request, res: Response) => {
   const { data } = req.body;
-  console.log(data)
+
 
   if (!data) {
     return res
@@ -46,9 +46,7 @@ const loginuser = async (req: Request, res: Response) => {
     //   maxAge: 24 * 60 * 60 * 1000,
     // });
     const createUser = await getUser(data.id)
-
-    res.json({ user: createUser });
-
+    res.json({ user: createUser  });
   }
 };
 
