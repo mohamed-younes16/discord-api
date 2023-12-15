@@ -44,11 +44,13 @@ model server {
 
 model member {
   id       String   @id @unique @default(uuid())
-  member   User     @relation("server_Member", fields: [memberId], references: [id])
+  member   User     @relation("server_Member", fields: [memberId],  references: [id],onDelete: Cascade)
   memberId String
-  server   server   @relation("server_Member", fields: [serverId], references: [id])
+  server   server   @relation("server_Member", fields: [serverId],  references: [id],onDelete: Cascade)
   serverId String
   userType UserType
+
+  @@unique([memberId,serverId])
 }
 
 enum UserType {
@@ -64,12 +66,12 @@ enum ChannelTypes {
 }
 
 model Channel {
-  serversBelong   server       @relation("server_Channel_creator", fields: [serversBelongId], references: [id])
+  serversBelong   server       @relation("server_Channel_creator", fields: [serversBelongId],  references: [id],onDelete: Cascade)
   serversBelongId String
   id              String       @id @unique @default(uuid())
   type            ChannelTypes
   name            String     
-  creator         User         @relation("server_Channel_creator", fields: [creatorId], references: [id])
+  creator         User         @relation("server_Channel_creator", fields: [creatorId],  references: [id],onDelete: Cascade)
   creatorId       String
   createdAt       DateTime     @default(now())
   chat     Chat[]       @relation("channel_Chat")
@@ -80,14 +82,14 @@ model Chat {
   id        String   @id @unique @default(uuid())
   channelId String
   createdAt DateTime @default(now())
-  channel   Channel  @relation("channel_Chat", fields: [channelId], references: [id])
+  channel   Channel  @relation("channel_Chat", fields: [channelId],  references: [id],onDelete: Cascade)
   content   Content? @relation("chat_Content")
 }
 
 model Content {
   id String @id @unique @default(uuid())
 
-  chat Chat @relation("chat_Content", fields: [chatId], references: [id])
+  chat Chat @relation("chat_Content", fields: [chatId],  references: [id],onDelete: Cascade)
 
   chatId String @unique
 
@@ -100,7 +102,7 @@ model File {
   id       String    @id @unique @default(uuid())
   url      String
   fileType FileTypes
-  content  Content   @relation("content_File", fields: [fileId], references: [id])
+  content  Content   @relation("content_File", fields: [fileId],  references: [id],onDelete: Cascade)
   fileId   String    @unique
 }
 

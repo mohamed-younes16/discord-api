@@ -1,43 +1,81 @@
-import { PrismaClient } from "@prisma/client";
+
+import { prisma } from "./../prisma";
 import { Request, Response } from "express";
 
-const PatchServersontoller = async (req: Request, res: Response) => {
+const PatchServersController = async (req: Request, res: Response) => {
   const {
     userId,
     serverId,
     operationType,
     invitationLink,
+    serverData,
+    memberId
   }: {
     userId: string;
     serverId: string;
-    operationType: "addingMember" | "addingChat" | "editingServer";
+    operationType:
+      | "addingMember"
+      | "addingChat"
+      | "editingServer"
+      | "leaveMember";
     invitationLink: string;
+    serverData: {
+      imageUrl: string;
+      name: string;
+    };
+    memberId:string
   } = req.body;
-  const prisma = new PrismaClient();
-  let ServerUpdate :any
-console.log(req.body)
+
+  let ServerUpdate: any;
+
   if (!userId) {
     return res.status(401).json({ message: "Not Authorized" });
   }
 
   try {
-    if (operationType=="addingMember"){
-ServerUpdate = await prisma.server.update({where:{invitationLink},
-  data:{members:{create:{memberId:userId,userType:"member"}}}})
+    if (operationType === "addingMember") {
+      try {
+        ServerUpdate = await prisma.server.update({
+          where: { invitationLink },
+          data: {
+            members: { create: { memberId: userId, userType: "member" } },
+          },
+        });
+
+        res.status(201).json({
+          message: `You Joined The Server Server ✅`,
+          serversBelongsTo: ServerUpdate,
+        });
+      } catch (error) {
+        console.log(error);
+        res.status(409).json({ message: `You are already in the server ❌` });
+      }
+    } else if (operationType === "editingServer") {
+      ServerUpdate = await prisma.server.update({
+        where: { id: serverId },
+        data: { ...serverData },
+      });
+
+      res.status(201).json({ message: `Server Edited Successfully ✅` });
     }
+    
+    else if (operationType === "leaveMember") {
+      ServerUpdate = await prisma.server.update({
+        where: { id: serverId },
+        data: { members:{delete:{id:memberId,userType:{not:"admin"}}} },
+      });
 
-    console.log(ServerUpdate)
-    res
-    .status(201)
-    .json({ message: ` User Added to Server ✅  ` });
-
-
+      res.status(201).json({ message: `Server Edited Successfully ✅` });
+    }
+    else {
+      res.status(400).json({ message: "Invalid operation type" });
+    }
   } catch (error) {
     console.log(error);
     res
       .status(409)
-      .json({ message: ` Error Happend in the update operation ❌ ` });
+      .json({ message: `Error occurred in the update operation ❌` });
   }
 };
 
-module.exports = PatchServersontoller;
+module.exports = PatchServersController;

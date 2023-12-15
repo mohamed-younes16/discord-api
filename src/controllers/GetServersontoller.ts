@@ -1,8 +1,9 @@
-import { PrismaClient } from "@prisma/client";
+
 import { Request, Response } from "express";
+import { prisma } from "../prisma";
 
 const GetServersontoller = async (req: Request, res: Response) => {
-  const prisma = new PrismaClient();
+
   let serversBelongsTo:any = null;
   const {
     userId,

@@ -1,44 +1,65 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../prisma";
 
 const PostServersontoller = async (req: Request, res: Response) => {
-const prisma = new PrismaClient();
-
-const {
+  const {
     userId,
     serverData,
-}: { serverData: { imageUrl: string; name: string }; userId: string } =
-    req.body;
-
-if (!userId) {
+    operationType,
+    serverId,
+    name,
+    type
+  }: {
+    serverData: { imageUrl: string; name: string };
+    userId: string;
+    serverId: string;
+    name: string;
+    type: "text" | "video" | "audio";
+    operationType: "createChannel" | "createServer";
+  } = req.body;
+console.log(req.body)
+  if (!userId) {
     return res.status(401).json({ message: "Not Authorized " });
-}
+  }
 
-try {
+  try {
+    if (operationType === "createServer") {
+      const serverinitialization = await prisma.server.create({
+        data: {
+          ...serverData,
+          members: {
+            create: { memberId: userId, userType: "admin" },
+          },
+          channels: {
+            create: { name: "general", type: "text", creatorId: userId },
+          },
+        },
+        include: { channels: true, members: { include: { member: true } } },
+      });
 
-    const serverinitialization = await prisma.server.create({
-    data: {
-    ...serverData,
-    members: {
-        create:{memberId:userId,userType:"admin"}
-    },
-    channels:{create:{name:"general",type:"text",creatorId:userId,}},
-    },include:{channels:true,members:{include:{member:true}}}
-});
+      res.status(202).json({
+        message: `${serverData.name} created successfully ☑️ `,
+        serverinitialization,
+      });
 
-console.log(serverinitialization)
+    } else if (operationType === "createChannel") {
 
-res.status(202).json({ message: `${serverData.name} created successfully ☑️ `
-,serverinitialization })
+      const channelinitialization = await prisma.server.update({
+        where: { id: serverId },
+        data:{channels:{create:{creatorId:userId,name,type,}}}
+      });
 
+      res.status(202).json({
+        message: `${channelinitialization.name} created successfully ☑️ `,
 
-} catch (error) {
-    console.log(error)
- res.status(409).json({ message: `\"${serverData.name}\" was not created because it already exists ❌ ` })
-    
-}
-
-
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(409).json({
+      message: `\"${serverData.name}\" was not created because it already exists ❌ `,
+    });
+  }
 };
 
 module.exports = PostServersontoller;
