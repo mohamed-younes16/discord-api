@@ -114,7 +114,7 @@ console.log(chatLimit)
     res
       .status(409)
       .json({ message: ` Error Happend when fetching servers ❌ ` });  
-        console.log(error,"\______________");
+  
   }
 };
 

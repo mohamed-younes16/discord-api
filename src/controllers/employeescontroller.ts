@@ -1,7 +1,7 @@
 
 const employeeSchema = require("../schemas/employeeShema")
 
-import { ErrorRequestHandler, Request, Response } from "express";
+import {  Request, Response } from "express";
 
 
 const getallemps = async (req: Request, res: Response): Promise<void> => {
