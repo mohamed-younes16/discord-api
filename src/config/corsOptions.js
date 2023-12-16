@@ -1,6 +1,5 @@
 
-const allowedlist =  ["https://chat.openai.com","http://localhost:3500"
-,"https://www.youtube.com","http://localhost:3000","https://discord-clone-pro.up.railway.app"]
+const allowedlist =  ["https://discord-clone-phi-one.vercel.app","https://www.youtube.com","http://localhost:3000","https://discord-clone-pro.up.railway.app"]
 
 const allowedHeaders = (origin,call)=>{
 
