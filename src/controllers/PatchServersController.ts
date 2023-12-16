@@ -12,7 +12,8 @@ const PatchServersController = async (req: Request, res: Response) => {
     serverData,
     memberId,
     channelId,
-    updateChannelValues
+    updateChannelValues,
+    userType
   }: {
     userId: string;
     serverId: string;
@@ -21,7 +22,8 @@ const PatchServersController = async (req: Request, res: Response) => {
       | "addingChat"
       | "editingServer"
       | "leaveMember"
-      | "editChannel";
+      | "editChannel"
+      |"changeMemberType";
     invitationLink: string;
     serverData: {
       imageUrl: string;
@@ -33,6 +35,8 @@ const PatchServersController = async (req: Request, res: Response) => {
     name: string;
     type: "text" | "video" | "audio"
    } ;
+   userType:"moderator"|"member"
+
   } = req.body;
 console.log({   userId,
   serverId,
@@ -66,7 +70,8 @@ console.log({   userId,
         console.log(error);
         res.status(409).json({ message: `You are already in the server ❌` });
       }
-    } else if (operationType === "editingServer") {
+    } 
+    else if (operationType === "editingServer") {
       ServerUpdate = await prisma.server.update({
         where: { id: serverId },
         data: { ...serverData },
@@ -91,6 +96,27 @@ console.log({   userId,
 
       res.status(201).json({ message: `Channel Edited Successfully ✅` });
     }
+    else if (operationType === "changeMemberType") {
+      console.log({
+        userId,
+        serverId,
+        operationType,
+        invitationLink,
+        serverData,
+        memberId,
+        channelId,
+        updateChannelValues,
+        userType
+      })
+      await prisma.server.update({
+        where: { id: serverId,members:{some:{id:userId,userType:{in:["admin","moderator"]}}} },
+        data:{members:{update:{where:{id:memberId},data:{userType}}}}
+       
+      });
+
+      res.status(201).json({ message: `Channel Edited Successfully ✅` });
+    }
+
     else {
       res.status(400).json({ message: "Invalid operation type" });
     }

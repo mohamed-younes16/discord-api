@@ -1,12 +1,12 @@
-import { PrismaClient } from "@prisma/client";
+
 import { Request, Response } from "express";
 import { prisma } from "../prisma";
 
 const loginuser = async (req: Request, res: Response) => {
   const { state, userId }: any = req.query;
 
-  console.log( { state })
-  const UserUpdate = await prisma.user.update({
+
+await prisma.user.update({
     where: { id: userId },
     data: { active: state == "online" ? true : false },
   });

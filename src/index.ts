@@ -7,7 +7,7 @@ import path from "path";
 import cookieParser from 'cookie-parser';
 import http from 'http';
 import { Server as SocketIOServer } from 'socket.io';
-import e from 'express';
+
 
 dotenv.config();
 
@@ -51,16 +51,19 @@ server.all("*", (req: Request, res: Response) => {
   }
 });
 
+
+ioInstance.on("connection",(e)=>{
+
+  ioInstance.on("disconnect",()=>{
+    console.log("disconected------------------------------")
+  })
+})
+ioInstance.on("fetching",(e)=>{
+console.log(e)
+})
 httpServer.listen(Port, () => {
   console.log(`Server listening on port ${Port}`);
 });
-ioInstance.on("connect",(e)=>{
-  console.log(e.id)
-  ioInstance.on("disconnect",(e)=>{
-    console.log(e.id)
-  })
-})
-
 process.on("uncaughtException", (e) =>{}
   // console.error(e, "__________________________________44454_")
 );

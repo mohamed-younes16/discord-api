@@ -33,7 +33,7 @@ if (!userId) {
 
 try {
     if (operationType === "createMessage") {
-        console.log(chatLimit,"#############")
+
     const messageCreation = await prisma.channel.update({
         where: { id: channelId, serversBelongId: serverId },
         data: {
@@ -75,14 +75,7 @@ try {
     });
     }
     else  if (operationType === "deleteMessage") {
-        console.log({   userId,
-            operationType,
-            serverId,
-            messageData,
-            channelId,
-            memberId,
-            chatLimit,
-            messageId,})
+    
         const messageDeletion = await prisma.channel.update({
         where: { id: channelId, serversBelongId: serverId },
         data: {

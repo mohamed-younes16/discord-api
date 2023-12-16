@@ -22,7 +22,7 @@ const GetServersontoller = async (req: Request, res: Response) => {
     invitationLink: string;
     channelId:string;
   } = req.body;
-console.log(chatLimit)
+
   if (!userId) {
     return res.status(401).json({ message: "Not Authorized " });
   }
