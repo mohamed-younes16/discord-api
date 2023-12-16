@@ -1,23 +1,25 @@
 import { credentials } from './middleware/credentials';
-
-import express from "express";
-import { Request, Response } from "express";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import path from "path";
-
 import cookieParser from 'cookie-parser';
-
-
+import http from 'http';
+import { Server as SocketIOServer } from 'socket.io';
+import e from 'express';
 
 dotenv.config();
 
 const Port = process.env.PORT || 5000;
 const allowedHeaders = require("./config/corsOptions");
 const server = express();
+const httpServer = http.createServer(server);
 
-
+export const ioInstance = new SocketIOServer(httpServer, {
+  allowEIO3: true,
+  cors: { origin: "*" }
+});
 
 server.use(cookieParser());
 server.use(credentials);
@@ -49,11 +51,18 @@ server.all("*", (req: Request, res: Response) => {
   }
 });
 
-server.listen(Port, () => console.log(`listening on port ${Port}`));
+httpServer.listen(Port, () => {
+  console.log(`Server listening on port ${Port}`);
+});
+ioInstance.on("connect",(e)=>{
+  console.log(e.id)
+  ioInstance.on("disconnect",(e)=>{
+    console.log(e.id)
+  })
+})
 
-process.on("uncaughtException", (e) =>
-  console.error(e, "___________________________________")
+process.on("uncaughtException", (e) =>{}
+  // console.error(e, "__________________________________44454_")
 );
 
-
-export default server
+export default server;

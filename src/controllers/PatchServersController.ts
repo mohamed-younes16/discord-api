@@ -1,4 +1,5 @@
 
+import { $Enums } from "@prisma/client";
 import { prisma } from "./../prisma";
 import { Request, Response } from "express";
 
@@ -9,7 +10,9 @@ const PatchServersController = async (req: Request, res: Response) => {
     operationType,
     invitationLink,
     serverData,
-    memberId
+    memberId,
+    channelId,
+    updateChannelValues
   }: {
     userId: string;
     serverId: string;
@@ -17,15 +20,28 @@ const PatchServersController = async (req: Request, res: Response) => {
       | "addingMember"
       | "addingChat"
       | "editingServer"
-      | "leaveMember";
+      | "leaveMember"
+      | "editChannel";
     invitationLink: string;
     serverData: {
       imageUrl: string;
       name: string;
     };
-    memberId:string
+    memberId:string;
+    channelId:string;
+   updateChannelValues :{
+    name: string;
+    type: "text" | "video" | "audio"
+   } ;
   } = req.body;
-
+console.log({   userId,
+  serverId,
+  operationType,
+  invitationLink,
+  serverData,
+  memberId,
+  channelId,
+  updateChannelValues})
   let ServerUpdate: any;
 
   if (!userId) {
@@ -60,12 +76,20 @@ const PatchServersController = async (req: Request, res: Response) => {
     }
     
     else if (operationType === "leaveMember") {
-      ServerUpdate = await prisma.server.update({
+      await prisma.server.update({
         where: { id: serverId },
         data: { members:{delete:{id:memberId,userType:{not:"admin"}}} },
       });
 
       res.status(201).json({ message: `Server Edited Successfully ✅` });
+    }
+    else if (operationType === "editChannel") {
+      await prisma.channel.update({
+        where: { id: channelId },
+        data: { ...updateChannelValues, },
+      });
+
+      res.status(201).json({ message: `Channel Edited Successfully ✅` });
     }
     else {
       res.status(400).json({ message: "Invalid operation type" });

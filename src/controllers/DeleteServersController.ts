@@ -1,12 +1,22 @@
-
 import { Request, Response } from "express";
 import { prisma } from "../prisma";
 
 const GetServersontoller = async (req: Request, res: Response) => {
-  const { userId, isAdmin, serverId } = req.body;
-
-
- 
+  const {
+    userId,
+    isAdmin,
+    serverId,
+    operationType,
+    channelId
+  }: {
+    userId: string;
+    serverId: string;
+    operationType:
+    "deleteServer"
+    |"deleteChannel";
+    isAdmin:boolean;
+    channelId: string;
+  } = req.body;
 
   if (!userId) {
     return res.status(404).json({ message: "No valid data passed " });
@@ -14,15 +24,27 @@ const GetServersontoller = async (req: Request, res: Response) => {
 
   try {
     if (isAdmin) {
-      await prisma.server.delete({
+      if (operationType === "deleteServer") {
+          const del=   await prisma.server.delete({
         where: {
           id: serverId,
           members: { some: { memberId: userId, userType: "admin" } },
         },
       });
-      res
-      .status(200)
-      .json({ message: `Server Deleted Successfully ✅` });
+console.log(del)
+      res.status(200).json({ message: `Server Deleted Successfully ✅` });
+      }
+      else if (operationType ==="deleteChannel") {
+        const del=   await prisma.channel.delete({
+          where: {
+            id: channelId,
+            creator:{ id:userId,},
+          },
+        });
+
+        res.status(200).json({ message: `Channel Deleted Successfully ✅` });
+      }
+  
     }
   } catch (error) {
     console.log(error);

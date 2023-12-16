@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "npx prisma generate && nodemon src/index.ts",
+    "start": "nodemon src/index.ts",
     "dev": "nodemon src/index.ts --pretty --respawn",
     "vercel-build": "echo hello &&  prisma generate ",
     "build": "tsc"
@@ -16,6 +16,7 @@
     "@types/cookie-parser": "^1.4.6",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
+    "@types/socket.io": "^3.0.2",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "cookie-parser": "^1.4.6",

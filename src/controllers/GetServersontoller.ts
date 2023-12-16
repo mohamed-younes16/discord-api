@@ -1,37 +1,48 @@
-
 import { Request, Response } from "express";
 import { prisma } from "../prisma";
 
 const GetServersontoller = async (req: Request, res: Response) => {
 
-  let serversBelongsTo:any = null;
   const {
     userId,
     serverId,
     chatLimit,
     operationType,
-    invitationLink
+    invitationLink,
+    channelId,
   }: {
     userId: string;
     chatLimit: number;
     serverId: string;
-    operationType: "findGeneral" | "findSpecific"|"findInvitation";
-    invitationLink:string
+    operationType:
+      | "findGeneral"
+      | "findSpecific"
+      | "findInvitation"
+      | "findChannel";
+    invitationLink: string;
+    channelId:string;
   } = req.body;
-
+console.log(chatLimit)
   if (!userId) {
     return res.status(401).json({ message: "Not Authorized " });
   }
-
+     
   try {
-    if (operationType === "findGeneral") {
 
-      serversBelongsTo = await prisma.server.findMany({
+    if (operationType === "findGeneral") {
+    const  serversBelongsTo = await prisma.server.findMany({
         where: { members: { some: { memberId: userId } } },
         include: { members: true, channels: true },
       });
-    } else if (operationType === "findSpecific") {
-      serversBelongsTo = await prisma.server.findFirst({
+      res
+      .status(202)
+      .json({ message: `found server(s) successfully ☑️ `, serversBelongsTo });
+
+    }
+    
+    else if (operationType === "findSpecific") {
+
+    const  serversBelongsTo = await prisma.server.findFirst({
         where: { id: serverId, members: { some: { memberId: userId } } },
         include: {
           members: { include: { member: true } },
@@ -40,12 +51,12 @@ const GetServersontoller = async (req: Request, res: Response) => {
               creator: true,
               chat: {
                 orderBy: { createdAt: "desc" },
-                take: chatLimit || 10,
+                take: chatLimit || 5,
                 include: {
+                  creator: { include: { member: true } },
                   content: {
                     include: {
                       file: true,
-                      chat: { include: { content: true } },
                     },
                   },
                 },
@@ -54,22 +65,56 @@ const GetServersontoller = async (req: Request, res: Response) => {
           },
         },
       });
+      res
+        .status(202)
+        .json({
+          message: `found server(s) successfully ☑️ `,
+          serversBelongsTo,
+        });
     }
-    else if (operationType === "findInvitation") {
-      serversBelongsTo = await prisma.server.findFirst({where:{ invitationLink, }},)
-      
-      };
     
-
-
-    res
+    else if (operationType === "findChannel") {
+    const  serversBelongsTo = await prisma.channel.findFirst({
+        where: { id: channelId },
+        include: {
+          chat: {
+            orderBy: { createdAt: "desc" },
+            take: chatLimit || 9,
+            include: {
+              creator: { include: { member: true } },
+              content: { include: { file: true } },
+            },
+          },
+        },
+      });
+      res
+        .status(202)
+        .json({
+          message: `found server(s) successfully ☑️ `,
+          serversBelongsTo,
+        });
+        res
+        .status(202)
+        .json({ message: `found server(s) successfully ☑️ `, serversBelongsTo });
+    } 
+    
+    else if (operationType === "findInvitation") {
+    const  serversBelongsTo = await prisma.server.findFirst({
+        where: { invitationLink },
+      });
+      res
       .status(202)
       .json({ message: `found server(s) successfully ☑️ `, serversBelongsTo });
+
+    }
+
+
   } catch (error) {
-    console.log(error);
+
     res
       .status(409)
-      .json({ message: ` Error Happend when fetching servers ❌ ` });
+      .json({ message: ` Error Happend when fetching servers ❌ ` });  
+        console.log(error,"\______________");
   }
 };
 

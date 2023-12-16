@@ -13,7 +13,6 @@ datasource db {
 model User {
   id            String    @id @unique @default(uuid())
   name          String
-  // idc String @unique
   username      String    @unique
   imageUrl      String
   bio           String
@@ -49,7 +48,7 @@ model member {
   server   server   @relation("server_Member", fields: [serverId],  references: [id],onDelete: Cascade)
   serverId String
   userType UserType
-
+  chatList Chat[]  @relation("chat_owner")
   @@unique([memberId,serverId])
 }
 
@@ -80,10 +79,13 @@ model Channel {
 
 model Chat {
   id        String   @id @unique @default(uuid())
-  channelId String
-  createdAt DateTime @default(now())
   channel   Channel  @relation("channel_Chat", fields: [channelId],  references: [id],onDelete: Cascade)
+  channelId String
+  creator   member      @relation("chat_owner", fields: [creatorId],  references: [id],onDelete: Cascade)
+  creatorId String
   content   Content? @relation("chat_Content")
+  createdAt DateTime @default(now())
+
 }
 
 model Content {
