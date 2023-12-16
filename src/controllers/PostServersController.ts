@@ -57,7 +57,8 @@ try {
       });
 
 } catch (error) {
-  res.status(202).json({
+  console.log(error)
+  res.status(409).json({
     message: `${name} Already Exists ❌`,
 
   });
