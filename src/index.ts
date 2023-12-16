@@ -38,7 +38,8 @@ server.use("/login", require("./routes/login"));
 // server.use("/emp", require("./routes/api/employees"));
 server.use("/servers", require("./routes/servers"));
 server.use("/state", require("./routes/state"));
-// // __________________________________________________________
+
+server.use("/users", require("./routes/users"));
 
 server.all("*", (req: Request, res: Response) => {
   res.status(404);
