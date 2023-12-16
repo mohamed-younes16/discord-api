@@ -22,7 +22,12 @@ const PostServersontoller = async (req: Request, res: Response) => {
   if (!userId) {
     return res.status(401).json({ message: "Not Authorized " });
   }
-
+  console.log({   userId,
+    serverData,
+    operationType,
+    serverId,
+    name,
+    type,})
   try {
     if (operationType === "createServer") {
       const serverinitialization = await prisma.server.create({
@@ -44,7 +49,9 @@ const PostServersontoller = async (req: Request, res: Response) => {
       });
 
     } else if (operationType === "createChannel") {
+
 try {
+
   
       const channelinitialization = await prisma.server.update({
         where: { id: serverId },
