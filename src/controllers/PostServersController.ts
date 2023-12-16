@@ -57,9 +57,10 @@ try {
       });
 
 } catch (error) {
+
   console.log(error)
   res.status(409).json({
-    message: `${name} Already Exists ❌`,
+    message: `${name} Already Exists or error happend ❌`,
 
   });
 }
