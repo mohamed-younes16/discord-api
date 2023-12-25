@@ -48,12 +48,7 @@ console.log(del)
         res.status(200).json({ message: `Channel Deleted Successfully ✅` });
       }
       else if (operationType ==="deleteMember") {
-console.log({    userId,
-  isAdmin,
-  serverId,
-  operationType,
-  channelId,
-  memberId})
+
         const del=   await prisma.server.update({
           where: { id: serverId,members:{some:{memberId:userId,userType:"admin"}} },
           data:{members: {delete:{id:memberId}}}

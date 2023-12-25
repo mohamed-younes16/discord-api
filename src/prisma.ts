@@ -18,7 +18,7 @@ export const createuser = async (data: User) => {
 export const getUser = async (id: string) => {
 
   try {
-    const users = await prisma.user.findUnique({ where: { id } });
+    const users = await prisma.user.findUnique({ where: { id },include:{freindsRequestedFrom:true,freindsWith:true} });
 
     return users;
     

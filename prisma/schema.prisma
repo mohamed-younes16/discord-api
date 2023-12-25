@@ -11,45 +11,93 @@ datasource db {
 }
 
 model User {
-  id            String    @id @unique @default(uuid())
-  name          String
-  username      String    @unique
-  imageUrl      String
-  bio           String
-  onboarded     Boolean   @default(false)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  active        Boolean
-  freinds       User[]    @relation("friends")
-  friendsof     User[]    @relation("friends")
-  memberOf      member[]  @relation("server_Member")
-  email         String    @unique
-  channelsAdmin Channel[] @relation("server_Channel_creator")
-
+  id             String              @id @unique @default(uuid())
+  name           String
+  username       String              @unique
+  imageUrl       String
+  bio            String
+  onboarded      Boolean             @default(false)
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  active         Boolean
+  FreindOfChat   FreindsChatObject[] @relation("friendsOfChat")
+  FreindWithChat FreindsChatObject[] @relation("FreindWithChat")
+  memberOf       member[]            @relation("server_Member")
+  email          String              @unique
+  channelsAdmin  Channel[]           @relation("server_Channel_creator")
+  chatsOwner     FreindsChatList[]   @relation("chat_owner")
+  freindsWith User[] @relation("freindship") 
+  freindsOf User[] @relation("freindship") 
+  freindsRequestedTo User[] @relation("requests")
+  freindsRequestedFrom User[] @relation("requests")
   @@index([id])
+}
+
+model FreindsChatObject {
+  id            String            @id @unique @default(uuid())
+  chatCreator   User              @relation("friendsOfChat", fields: [chatCreatorId], references: [id], onDelete: Cascade)
+  chatCreatorId String
+  ChatWith      User              @relation("FreindWithChat", fields: [ChatWithId], references: [id], onDelete: Cascade)
+  ChatWithId    String
+  chat          FreindsChatList[] @relation("Freinds_list")
+}
+
+model FreindsChatList {
+  id                   String             @id @unique @default(uuid())
+  createdAt            DateTime           @default(now())
+  freindChatRefrence   FreindsChatObject  @relation("Freinds_list", fields: [freindChatRefrenceId], references: [id], onDelete: Cascade)
+  freindChatRefrenceId String
+  creator              User               @relation("chat_owner", fields: [creatorId], references: [id], onDelete: Cascade)
+  creatorId            String
+  content              FreindChatContent? @relation("Freind_Content")
+}
+
+model FreindChatContent {
+  id     String          @id @unique @default(uuid())
+  chat   FreindsChatList @relation("Freind_Content", fields: [chatId], references: [id], onDelete: Cascade)
+  chatId String          @unique
+  text   String
+  file   File?           @relation("chat_freind_File")
+}
+
+model File {
+  id            String             @id @unique @default(uuid())
+  url           String
+  fileType      FileTypes
+  content       Content            @relation("content_File", fields: [fileId], references: [id], onDelete: Cascade)
+  fileId        String             @unique
+  contentFreind FreindChatContent? @relation("chat_freind_File", fields: [fileIdFreind], references: [id], onDelete: Cascade)
+  fileIdFreind  String?            @unique
+}
+
+enum FileTypes {
+  pdf
+  image
 }
 
 model server {
   updatedAt      DateTime  @updatedAt
   id             String    @id @unique @default(uuid())
-  name           String    
+  name           String
   imageUrl       String
   createdAt      DateTime  @default(now())
   members        member[]  @relation("server_Member")
   invitationLink String    @unique @default(uuid())
   channels       Channel[] @relation("server_Channel_creator")
+
   @@index([id])
 }
 
 model member {
   id       String   @id @unique @default(uuid())
-  member   User     @relation("server_Member", fields: [memberId],  references: [id],onDelete: Cascade)
+  member   User     @relation("server_Member", fields: [memberId], references: [id], onDelete: Cascade)
   memberId String
-  server   server   @relation("server_Member", fields: [serverId],  references: [id],onDelete: Cascade)
+  server   server   @relation("server_Member", fields: [serverId], references: [id], onDelete: Cascade)
   serverId String
   userType UserType
-  chatList Chat[]  @relation("chat_owner")
-  @@unique([memberId,serverId])
+  chatList Chat[]   @relation("chat_owner")
+
+  @@unique([memberId, serverId])
 }
 
 enum UserType {
@@ -65,34 +113,32 @@ enum ChannelTypes {
 }
 
 model Channel {
-  serversBelong   server       @relation("server_Channel_creator", fields: [serversBelongId],  references: [id],onDelete: Cascade)
+  serversBelong   server       @relation("server_Channel_creator", fields: [serversBelongId], references: [id], onDelete: Cascade)
   serversBelongId String
   id              String       @id @unique @default(uuid())
   type            ChannelTypes
-  name            String     
-  creator         User         @relation("server_Channel_creator", fields: [creatorId],  references: [id],onDelete: Cascade)
+  name            String
+  creator         User         @relation("server_Channel_creator", fields: [creatorId], references: [id], onDelete: Cascade)
   creatorId       String
   createdAt       DateTime     @default(now())
-  chat     Chat[]       @relation("channel_Chat")
-  @@unique([name,serversBelongId])
+  chat            Chat[]       @relation("channel_Chat")
+
+  @@unique([name, serversBelongId])
 }
 
 model Chat {
   id        String   @id @unique @default(uuid())
-  channel   Channel  @relation("channel_Chat", fields: [channelId],  references: [id],onDelete: Cascade)
+  channel   Channel  @relation("channel_Chat", fields: [channelId], references: [id], onDelete: Cascade)
   channelId String
-  creator   member      @relation("chat_owner", fields: [creatorId],  references: [id],onDelete: Cascade)
+  creator   member   @relation("chat_owner", fields: [creatorId], references: [id], onDelete: Cascade)
   creatorId String
   content   Content? @relation("chat_Content")
   createdAt DateTime @default(now())
-
 }
 
 model Content {
-  id String @id @unique @default(uuid())
-
-  chat Chat @relation("chat_Content", fields: [chatId],  references: [id],onDelete: Cascade)
-
+  id     String @id @unique @default(uuid())
+  chat   Chat   @relation("chat_Content", fields: [chatId], references: [id], onDelete: Cascade)
   chatId String @unique
 
   text String
@@ -100,15 +146,117 @@ model Content {
   file File? @relation("content_File")
 }
 
-model File {
-  id       String    @id @unique @default(uuid())
-  url      String
-  fileType FileTypes
-  content  Content   @relation("content_File", fields: [fileId],  references: [id],onDelete: Cascade)
-  fileId   String    @unique
-}
+// // This is your Prisma schema file,
+// // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-enum FileTypes {
-  pdf
-  image
-}
+// generator client {
+//   provider = "prisma-client-js"
+// }
+
+// datasource db {
+//   provider = "postgresql"
+//   url      = env("DATABASE_URL")
+// }
+
+// model User {
+//   id            String    @id @unique @default(uuid())
+//   name          String
+//   username      String    @unique
+//   imageUrl      String
+//   bio           String
+//   onboarded     Boolean   @default(false)
+//   createdAt     DateTime  @default(now())
+//   updatedAt     DateTime  @updatedAt
+//   active        Boolean
+//   freinds       User[]    @relation("friends")
+//   friendsof     User[]    @relation("friends")
+//   memberOf      member[]  @relation("server_Member")
+//   email         String    @unique
+//   channelsAdmin Channel[] @relation("server_Channel_creator")
+
+//   @@index([id])
+// }
+
+// model server {
+//   updatedAt      DateTime  @updatedAt
+//   id             String    @id @unique @default(uuid())
+//   name           String    
+//   imageUrl       String
+//   createdAt      DateTime  @default(now())
+//   members        member[]  @relation("server_Member")
+//   invitationLink String    @unique @default(uuid())
+//   channels       Channel[] @relation("server_Channel_creator")
+//   @@index([id])
+// }
+
+// model member {
+//   id       String   @id @unique @default(uuid())
+//   member   User     @relation("server_Member", fields: [memberId],  references: [id],onDelete: Cascade)
+//   memberId String
+//   server   server   @relation("server_Member", fields: [serverId],  references: [id],onDelete: Cascade)
+//   serverId String
+//   userType UserType
+//   chatList Chat[]  @relation("chat_owner")
+//   @@unique([memberId,serverId])
+// }
+
+// enum UserType {
+//   admin
+//   moderator
+//   member
+// }
+
+// enum ChannelTypes {
+//   video
+//   audio
+//   text
+// }
+
+// model Channel {
+//   serversBelong   server       @relation("server_Channel_creator", fields: [serversBelongId],  references: [id],onDelete: Cascade)
+//   serversBelongId String
+//   id              String       @id @unique @default(uuid())
+//   type            ChannelTypes
+//   name            String     
+//   creator         User         @relation("server_Channel_creator", fields: [creatorId],  references: [id],onDelete: Cascade)
+//   creatorId       String
+//   createdAt       DateTime     @default(now())
+//   chat     Chat[]       @relation("channel_Chat")
+//   @@unique([name,serversBelongId])
+// }
+
+// model Chat {
+//   id        String   @id @unique @default(uuid())
+//   channel   Channel  @relation("channel_Chat", fields: [channelId],  references: [id],onDelete: Cascade)
+//   channelId String
+//   creator   member      @relation("chat_owner", fields: [creatorId],  references: [id],onDelete: Cascade)
+//   creatorId String
+//   content   Content? @relation("chat_Content")
+//   createdAt DateTime @default(now())
+
+// }
+
+// model Content {
+//   id String @id @unique @default(uuid())
+
+//   chat Chat @relation("chat_Content", fields: [chatId],  references: [id],onDelete: Cascade)
+
+//   chatId String @unique
+
+//   text String
+
+//   file File? @relation("content_File")
+// }
+
+// model File {
+//   id       String    @id @unique @default(uuid())
+//   url      String
+//   fileType FileTypes
+//   content  Content   @relation("content_File", fields: [fileId],  references: [id],onDelete: Cascade)
+//   fileId   String    @unique
+// }
+
+// enum FileTypes {
+//   pdf
+//   image
+// }

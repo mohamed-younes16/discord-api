@@ -38,14 +38,7 @@ const PatchServersController = async (req: Request, res: Response) => {
    userType:"moderator"|"member"
 
   } = req.body;
-console.log({   userId,
-  serverId,
-  operationType,
-  invitationLink,
-  serverData,
-  memberId,
-  channelId,
-  updateChannelValues})
+
   let ServerUpdate: any;
 
   if (!userId) {

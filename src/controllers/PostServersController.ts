@@ -22,12 +22,7 @@ const PostServersontoller = async (req: Request, res: Response) => {
   if (!userId) {
     return res.status(401).json({ message: "Not Authorized " });
   }
-  console.log({   userId,
-    serverData,
-    operationType,
-    serverId,
-    name,
-    type,})
+
   try {
     if (operationType === "createServer") {
       const serverinitialization = await prisma.server.create({
