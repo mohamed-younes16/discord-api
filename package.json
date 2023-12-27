@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "npx prisma generate && nodemon src/index.ts",
+    "start": "npx prisma generate && node src/index.ts",
     "dev": "nodemon src/index.ts --pretty --respawn",
     "vercel-build": "echo hello &&  prisma generate ",
     "build": "tsc"
