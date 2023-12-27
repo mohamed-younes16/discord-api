@@ -40,6 +40,8 @@ const getUsersController = async (req: Request, res: Response) => {
             orderBy: { createdAt: "desc" },
             take: +chatLimit || 10,
           },
+          chatCreator:true,
+          ChatWith:true
         },
       });
 
