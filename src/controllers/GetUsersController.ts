@@ -32,6 +32,7 @@ const getUsersController = async (req: Request, res: Response) => {
       const chatObject = await prisma.freindsChatObject.findFirst({
         where: {
           chatCreatorId: { in: [userId, friendId] },
+          ChatWithId: { in: [userId, friendId] },
         },
         include: {
           chat: {

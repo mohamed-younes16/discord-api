@@ -68,7 +68,7 @@ try {
     } else if (operationType === "deleteMessage") {
 
     const messageDeletion = await prisma.freindsChatObject.update({
-        where: { id: chatId },
+        where: { id: chatId, },
         data: {
         chat: {
             delete: { id: messageId },
