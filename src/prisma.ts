@@ -16,12 +16,13 @@ export const createuser = async (data: User) => {
   }
 };
 export const getUser = async (id: string) => {
-
   try {
-    const users = await prisma.user.findUnique({ where: { id },include:{freindsRequestedFrom:true,freindsWith:true} });
+    const users = await prisma.user.findUnique({
+      where: { id },
+      include: { freindsRequestedFrom: {take:10} , freindsWith: {take:10} ,freindsOf:{take:10} },
+    });
 
     return users;
-    
   } catch (error: any) {
     console.log(error);
     return false;

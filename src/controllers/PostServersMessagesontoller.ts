@@ -105,16 +105,7 @@ try {
     }
 
     else if (operationType === "editMessage") {
-        console.log({
-            userId,
-            operationType,
-            serverId,
-            messageData,
-            channelId,
-            memberId,
-            chatLimit,
-            messageId,
-        })
+
         const messageCreation = await prisma.channel.update({
             where: { id: channelId, serversBelongId: serverId },
             data: {
@@ -143,10 +134,7 @@ try {
             `message-server-${serverId}-channel-${channelId}`,
             messageCreation.chat
         );
-        ioInstance.emit(
-            `message-server-${serverId}-channel-${channelId}`,
-            messageCreation.chat
-        );
+       
         res.status(201).json({
             message: `message has been edited successfully ☑️ `,
         });

@@ -40,6 +40,7 @@ model FreindsChatObject {
   ChatWith      User              @relation("FreindWithChat", fields: [ChatWithId], references: [id], onDelete: Cascade)
   ChatWithId    String
   chat          FreindsChatList[] @relation("Freinds_list")
+  @@unique([chatCreatorId, ChatWithId])
 }
 
 model FreindsChatList {
@@ -64,10 +65,10 @@ model File {
   id            String             @id @unique @default(uuid())
   url           String
   fileType      FileTypes
-  content       Content            @relation("content_File", fields: [fileId], references: [id], onDelete: Cascade)
-  fileId        String             @unique
-  contentFreind FreindChatContent? @relation("chat_freind_File", fields: [fileIdFreind], references: [id], onDelete: Cascade)
-  fileIdFreind  String?            @unique
+  content       Content?            @relation("content_File", fields: [contentId], references: [id], onDelete: Cascade)
+  contentId        String?             @unique
+  contentFreind FreindChatContent? @relation("chat_freind_File", fields: [contentIdFreind], references: [id], onDelete: Cascade)
+  contentIdFreind  String?            @unique
 }
 
 enum FileTypes {

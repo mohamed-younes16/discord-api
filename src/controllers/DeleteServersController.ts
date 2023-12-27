@@ -49,7 +49,7 @@ console.log(del)
       }
       else if (operationType ==="deleteMember") {
 
-        const del=   await prisma.server.update({
+        await prisma.server.update({
           where: { id: serverId,members:{some:{memberId:userId,userType:"admin"}} },
           data:{members: {delete:{id:memberId}}}
         });

@@ -15,11 +15,14 @@ const handleFriendRequest = async (
     updateData.freindsWith = { connect: { id: friendId } };
   }
 
- const operation =  await prisma.user.update({
+  const operation = await prisma.user.update({
     where: { id: userId },
     data: updateData,
   });
-  return operation
+  await prisma.freindsChatObject.create({
+    data: { chatCreatorId: userId, ChatWithId: friendId },
+  });
+  return operation;
 };
 
 const PatchUsersController = async (req: Request, res: Response) => {
@@ -31,15 +34,13 @@ const PatchUsersController = async (req: Request, res: Response) => {
   }: {
     friendId: string;
     userId: string;
-    operationType: "friendRequest" | "friendRequestHandle";
+    operationType: "friendRequest" | "friendRequestHandle" | "deleteFriend" ;
     friendRequestDecision: "accept" | "decline";
   } = req.body;
 
   if (!userId) {
     return res.status(401).json({ message: "Not Authorized" });
   }
-
-  console.log({ userId, operationType, friendRequestDecision, friendId });
 
   try {
     if (operationType === "friendRequest") {
@@ -48,23 +49,36 @@ const PatchUsersController = async (req: Request, res: Response) => {
         data: { freindsRequestedFrom: { connect: { id: userId } } },
       });
 
-      res.status(202).json({
+      res.status(200).json({
         message: `Requested successfully ☑️`,
       });
     } else if (operationType === "friendRequestHandle") {
+      await handleFriendRequest(userId, friendId, friendRequestDecision);
 
-      const gg = await handleFriendRequest(
-        userId,
-        friendId,
-        friendRequestDecision
-      );
-      console.log(gg)
-
-      res.status(202).json({
+      res.status(200).json({
         message:
           friendRequestDecision === "accept"
             ? `Added Friend successfully ☑️`
             : `Declined Friend Request`,
+      });
+    } else if (operationType === "deleteFriend") {
+      await prisma.freindsChatObject.deleteMany({
+        where: {
+          chatCreatorId: { in: [userId, friendId] },
+          ChatWithId: { in: [userId, friendId] },
+        },
+      });
+
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          freindsWith: { disconnect: { id: friendId } },
+          freindsOf: { disconnect: { id: friendId } },
+        },
+      });
+
+      res.status(200).json({
+        message: `Deleted Friend `,
       });
     }
   } catch (error) {

@@ -3,31 +3,47 @@ import { prisma } from "../prisma";
 var _ = require("lodash");
 
 const getUsersController = async (req: Request, res: Response) => {
-  const { userId, username }: any = req.query;
+  const { userId, username, operationType, friendId ,chatLimit}: any = req.query;
 
   if (!userId) {
     return res.status(401).json({ message: "Not Authorized" });
   }
 
   try {
-    // Debounce the function to wait for a short delay before making the API call
-    const debouncedSearch = _.debounce(async () => {
-      const users = await prisma.user.findMany({
+    if (operationType === "findUser") {
+      const debouncedSearch = _.debounce(async () => {
+        const users = await prisma.user.findMany({
+          where: {
+            username: { contains: username },
+            id: { not: userId },
+            freindsOf: { none: { id: userId } },
+            freindsWith: { none: { id: userId } },
+          },
+          include: { freindsOf: true, freindsWith: true },
+        });
+        console.log(users);
+
+        res.status(200).json({ message: "Users Founded", users });
+      }, 500);
+
+      debouncedSearch();
+    }
+    if (operationType === "findChat") {
+      const chatObject = await prisma.freindsChatObject.findFirst({
         where: {
-          username: { contains: username },
-          id: { not: userId },
-          freindsOf: { none: { id: userId } },
-          freindsWith: { none: { id: userId } },
+          chatCreatorId: { in: [userId, friendId] },
         },
-        include:{freindsOf:true,freindsWith:true},
+        include: {
+          chat: {
+            include: { content: { include: { file: true } }, creator: true },
+            orderBy: { createdAt: "desc" },
+            take: +chatLimit || 10,
+          },
+        },
       });
-      console.log(users);
 
-      res.status(200).json({ message: "Users Founded", users });
-    }, 500);
-
-    // Call the debounced function
-    debouncedSearch();
+      res.status(200).json({ message: "Chat Founded", chatObject });
+    }
   } catch (error) {
     res.status(409).json({ message: "No Users Found ❌" });
   }
