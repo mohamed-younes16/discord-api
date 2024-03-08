@@ -15,12 +15,10 @@ const Port = process.env.PORT || 5000;
 const allowedHeaders = require("./config/corsOptions");
 const server = express();
 const httpServer = http.createServer(server);
-
 export const ioInstance = new SocketIOServer(httpServer, {
   allowEIO3: true,
   cors: { origin: "*" }
 });
-
 server.use(cookieParser());
 server.use(credentials);
 server.use(cors({ origin: allowedHeaders, optionsSuccessStatus: 200 }));
@@ -28,7 +26,7 @@ server.use(express.urlencoded({ extended: false }));
 server.use(bodyParser.urlencoded({ extended: false }));
 server.use(bodyParser.json());
 
-// routes _____________________________________________
+// routes _____________
 server.use("/", require("./routes/root"));
 // server.use("/subdir", require("./routes/subdir"));
 server.use("/register", require("./routes/register"));
